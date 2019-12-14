@@ -6,7 +6,7 @@ import math
 pygame.init()
 
 SIZE = WIDTH, HEIGHT = 200, 400
-BACKGROUND_COLOR = (0, 0, 0)
+BACKGROUND_COLOR = (230, 255, 230)
 
 screen = pygame.display.set_mode(SIZE)
 leaves = []
@@ -32,10 +32,8 @@ class Leaf(object):
                 self.rect.left = WIDTH - new_rect.width
             if new_rect.left < 0:
                 self.rect.left = 0
-        if new_rect.top < 0 or new_rect.bottom > HEIGHT:
-            self.speed[1] = -self.speed[1]
-            if new_rect.bottom > HEIGHT:
-                self.rect.top = HEIGHT - new_rect.height
+        if new_rect.top > HEIGHT:
+            self.rect.bottom = 0
 
     def draw(self):
         screen.blit(self.image, self.rect)
@@ -48,17 +46,11 @@ class Leaf(object):
 
 
 def init():
-    for i in range(0, 3):
-        leaf = Leaf([random.randint(50, WIDTH - 50), random.randint(30, HEIGHT - 200)],
+    for i in range(0, 5):
+        leaf = Leaf([random.randint(50, WIDTH - 50), random.randint(30, HEIGHT)],
                     [random.randint(1, 2), random.randint(1, 2)])
         leaf.move()
         leaves.append(leaf)
-
-
-def to255(x):
-    if x > 1:
-        x = 1
-    return int(255 * math.fabs(x))
 
 
 clock = pygame.time.Clock()
@@ -70,14 +62,7 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
 
-    first_rect = leaves[0].rect
-
-    # 根据第1片叶子的运动情况，随机切换背景色
-    color_r = to255(first_rect.top / HEIGHT)
-    color_g = to255(first_rect.left / WIDTH)
-    color_b = to255(math.fabs(first_rect.left) / (math.fabs(first_rect.top) + math.fabs(first_rect.left) + 1))
-    # print(color_r, color_g, color_b)
-    screen.fill((color_r, color_g, color_b))
+    screen.fill(BACKGROUND_COLOR)
 
     # 将旋转后的图象，渲染到新矩形里
     for item in leaves:
